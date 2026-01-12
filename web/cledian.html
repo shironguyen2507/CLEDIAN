@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi" class="antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="D:\Save My Document Files\Visual Studio Code Documents\Do-an-tot-nghiep\CLEDIAN_final\web\img\cledian-logo.png"
+    />
+    <title>CLEDIAN - Security Intelligence</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+
+    <!-- Font: Inter (UI) & JetBrains Mono (Code/Data) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              slate: {
+                850: "#1e293b",
+                900: "#0f172a",
+                950: "#020617",
+              },
+              primary: {
+                500: "#3b82f6", // Blue
+                600: "#2563eb",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Custom Scrollbar */
+      .custom-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 2px;
+      }
+      .dark .custom-scroll::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+
+      /* Smooth Fade */
+      .fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-100 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-200 min-h-screen flex flex-col font-sans"
+  >
+    <!-- Header -->
+    <header
+      class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
+      >
+        <!-- Brand -->
+        <div class="flex items-center gap-3">
+          <img
+            class="w-8 h-8 bg-slate-900 dark:bg-white rounded flex items-center justify-center text-white dark:text-slate-900 font-bold font-mono text-lg"
+            src="D:\Save My Document Files\Visual Studio Code Documents\Do-an-tot-nghiep\CLEDIAN_final\web\img\cledian-logo.png"
+            alt="CLEDIAN Logo"
+          />
+          <div class="flex flex-col">
+            <span class="font-bold text-lg tracking-tight leading-none"
+              >CLEDIAN</span
+            >
+            <span
+              class="text-[10px] text-gray-500 dark:text-gray-400 font-mono tracking-wider uppercase"
+              >Threat Detection</span
+            >
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="flex items-center gap-4">
+          <div
+            class="hidden md:flex items-center px-3 py-1 rounded bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30"
+          >
+            <div
+              class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"
+            ></div>
+            <span class="text-xs font-medium text-green-700 dark:text-green-400"
+              >System Online</span
+            >
+          </div>
+          <button
+            onclick="toggleTheme()"
+            class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-gray-500 dark:text-gray-400"
+          >
+            <i id="theme-icon" class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+        <!-- LEFT COLUMN: Analyzer (8 cols) -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+          <!-- Input Panel -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col"
+          >
+            <div
+              class="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50 rounded-t-lg"
+            >
+              <label
+                class="font-semibold text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-terminal text-primary-600"></i> Nội dung
+                văn bản
+              </label>
+              <div class="flex gap-2">
+                <button
+                  onclick="clearInput()"
+                  class="text-xs px-3 py-1.5 rounded border border-gray-200 dark:border-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-800 dark:hover:text-red-400 transition-colors"
+                >
+                  Xóa
+                </button>
+                <button
+                  onclick="pasteContent()"
+                  class="text-xs px-3 py-1.5 rounded bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                >
+                  Dán nội dung
+                </button>
+              </div>
+            </div>
+
+            <div class="relative flex-grow">
+              <textarea
+                id="inputText"
+                rows="12"
+                class="w-full p-4 bg-transparent border-none focus:ring-0 text-base font-mono leading-relaxed resize-y min-h-[250px] placeholder-gray-300 dark:placeholder-slate-600 text-gray-800 dark:text-gray-200"
+                placeholder="// Dán email hoặc tin nhắn SMS cần kiểm tra vào đây..."
+              ></textarea>
+            </div>
+
+            <div
+              class="p-4 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50 rounded-b-lg"
+            >
+              <span class="text-xs text-gray-400 font-mono" id="char-count"
+                >0 chars</span
+              >
+              <button
+                onclick="analyzeText()"
+                class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded shadow-sm transition-transform active:scale-95 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-shield-virus"></i> Phân tích rủi ro
+              </button>
+            </div>
+          </div>
+
+          <!-- Guidance Panel -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              class="bg-blue-50 dark:bg-slate-800/50 p-4 rounded border border-blue-100 dark:border-slate-700"
+            >
+              <h4
+                class="text-sm font-bold text-blue-800 dark:text-blue-400 mb-2"
+              >
+                Dấu hiệu Lừa đảo (SCAM)
+              </h4>
+              <ul
+                class="text-xs text-blue-900/70 dark:text-gray-400 space-y-1 list-disc list-inside"
+              >
+                <li>Yêu cầu chuyển tiền gấp hoặc cung cấp OTP.</li>
+                <li>Đường link lạ, tên miền sai chính tả.</li>
+                <li>Ngữ pháp kém, văn phong đe dọa.</li>
+              </ul>
+            </div>
+            <div
+              class="bg-gray-50 dark:bg-slate-800/50 p-4 rounded border border-gray-200 dark:border-slate-700"
+            >
+              <h4
+                class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Về hệ thống CLEDIAN
+              </h4>
+              <p
+                class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"
+              >
+                Mô hình AI sử dụng NLP để phân tích ngữ nghĩa văn bản. Kết quả
+                chỉ mang tính chất tham khảo. Hãy luôn kiểm tra chéo thông tin.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Output & History (4 cols) -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+          <!-- Result Card -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 p-5 min-h-[160px] flex flex-col justify-center relative overflow-hidden"
+          >
+            <!-- Placeholder State -->
+            <div id="result-placeholder" class="text-center">
+              <div
+                class="w-12 h-12 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3 text-gray-400"
+              >
+                <i class="fa-solid fa-radar text-xl"></i>
+              </div>
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white">
+                Sẵn sàng phân tích
+              </h3>
+              <p class="text-xs text-gray-500 mt-1">Chờ dữ liệu đầu vào...</p>
+            </div>
+
+            <!-- Loading State -->
+            <div
+              id="result-loading"
+              class="hidden absolute inset-0 bg-white dark:bg-slate-900 flex flex-col items-center justify-center z-10"
+            >
+              <i
+                class="fa-solid fa-circle-notch fa-spin text-2xl text-primary-600 mb-3"
+              ></i>
+              <span class="text-xs font-mono text-gray-500">Processing...</span>
+            </div>
+
+            <!-- Result Content -->
+            <div id="result-content" class="hidden fade-in text-center">
+              <div
+                id="res-icon-container"
+                class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl transition-colors"
+              >
+                <!-- Icon -->
+              </div>
+              <h2
+                id="res-title"
+                class="text-xl font-bold mb-1 uppercase tracking-tight"
+              >
+                <!-- Status -->
+              </h2>
+              <div class="flex items-center justify-center gap-2 mt-2">
+                <span class="text-xs font-mono text-gray-400">Confidence:</span>
+                <span
+                  id="res-score"
+                  class="text-xs font-mono font-bold bg-gray-100 dark:bg-slate-800 px-2 py-0.5 rounded"
+                  >--%</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- History List -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col flex-grow max-h-[500px]"
+          >
+            <div
+              class="p-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 flex justify-between items-center rounded-t-lg"
+            >
+              <h3
+                class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Lịch sử quét
+              </h3>
+              <button
+                onclick="clearHistory()"
+                class="text-[10px] text-gray-400 hover:text-red-500 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
+            <ul
+              id="historyList"
+              class="flex-1 overflow-y-auto p-0 custom-scroll"
+            >
+              <!-- Items -->
+              <li class="p-8 text-center text-xs text-gray-400 italic">
+                Chưa có dữ liệu
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="border-t border-gray-200 dark:border-slate-800 py-4 mt-auto bg-white dark:bg-slate-900"
+    >
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p
+          class="text-[10px] text-gray-400 uppercase tracking-widest font-mono"
+        >
+          SECURE CONNECTION • CLEDIAN ENGINE v2.0
+        </p>
+      </div>
+    </footer>
+
+    <!-- Logic -->
+    <script>
+      const API_URL = "http://127.0.0.1:8000/predict";
+      let historyData = [];
+
+      // --- Init ---
+      document.addEventListener("DOMContentLoaded", () => {
+        initTheme();
+        loadHistory();
+
+        document
+          .getElementById("inputText")
+          .addEventListener("input", function () {
+            document.getElementById("char-count").textContent =
+              this.value.length + " chars";
+          });
+      });
+
+      // --- Theme Logic ---
+      function initTheme() {
+        const saved = localStorage.getItem("theme");
+        const sysDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        if (saved === "dark" || (!saved && sysDark)) {
+          document.documentElement.classList.add("dark");
+          document.getElementById("theme-icon").className = "fa-solid fa-sun";
+        }
+      }
+
+      function toggleTheme() {
+        const html = document.documentElement;
+        html.classList.toggle("dark");
+        const isDark = html.classList.contains("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        document.getElementById("theme-icon").className = isDark
+          ? "fa-solid fa-sun"
+          : "fa-solid fa-moon";
+      }
+
+      // --- Core Functions ---
+      function clearInput() {
+        document.getElementById("inputText").value = "";
+        document.getElementById("char-count").textContent = "0 chars";
+        resetResultUI();
+      }
+
+      async function pasteContent() {
+        try {
+          const text = await navigator.clipboard.readText();
+          document.getElementById("inputText").value = text;
+          document.getElementById("char-count").textContent =
+            text.length + " chars";
+        } catch (err) {
+          alert(
+            "Vui lòng cho phép truy cập Clipboard hoặc dán thủ công (Ctrl+V)."
+          );
+        }
+      }
+
+      function resetResultUI() {
+        document
+          .getElementById("result-placeholder")
+          .classList.remove("hidden");
+        document.getElementById("result-content").classList.add("hidden");
+        document.getElementById("result-loading").classList.add("hidden");
+      }
+
+      async function analyzeText() {
+        const text = document.getElementById("inputText").value.trim();
+        if (!text) {
+          alert("Vui lòng nhập nội dung!");
+          return;
+        }
+
+        // UI Loading
+        document.getElementById("result-placeholder").classList.add("hidden");
+        document.getElementById("result-content").classList.add("hidden");
+        document.getElementById("result-loading").classList.remove("hidden");
+
+        try {
+          // Fetch
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+          });
+
+          if (!response.ok) throw new Error("Server Error");
+          const data = await response.json();
+
+          // UI Display (Simulate slight delay for UX)
+          setTimeout(() => {
+            displayResult(data.label, data.confidence || 0.9, text);
+            document.getElementById("result-loading").classList.add("hidden");
+          }, 500);
+        } catch (error) {
+          console.error(error);
+          document.getElementById("result-loading").classList.add("hidden");
+          document
+            .getElementById("result-placeholder")
+            .classList.remove("hidden");
+          alert("Lỗi kết nối Server! Đảm bảo Backend đang chạy tại port 8000.");
+        }
+      }
+
+      function displayResult(label, confidence, text) {
+        const content = document.getElementById("result-content");
+        const iconBox = document.getElementById("res-icon-container");
+        const title = document.getElementById("res-title");
+        const score = document.getElementById("res-score");
+
+        content.classList.remove("hidden");
+        const isSpam = label === "spam";
+        const percent = Math.round(confidence * 100) + "%";
+
+        score.textContent = percent;
+
+        if (isSpam) {
+          // SCAM STYLE
+          iconBox.className =
+            "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-500";
+          iconBox.innerHTML =
+            '<i class="fa-solid fa-triangle-exclamation"></i>';
+          title.textContent = "Cảnh Báo: Lừa Đảo";
+          title.className =
+            "text-xl font-bold mb-1 uppercase tracking-tight text-red-600 dark:text-red-500";
+        } else {
+          // SAFE STYLE
+          iconBox.className =
+            "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-500";
+          iconBox.innerHTML = '<i class="fa-solid fa-shield-check"></i>';
+          title.textContent = "An Toàn (Safe)";
+          title.className =
+            "text-xl font-bold mb-1 uppercase tracking-tight text-emerald-600 dark:text-emerald-500";
+        }
+
+        addToHistory(text, isSpam);
+      }
+
+      // --- History Logic ---
+      function addToHistory(text, isSpam) {
+        const newItem = {
+          text: text,
+          isSpam: isSpam,
+          time: new Date().toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        historyData.unshift(newItem);
+        if (historyData.length > 50) historyData.pop();
+
+        localStorage.setItem("cledian_history_v2", JSON.stringify(historyData));
+        renderHistory();
+      }
+
+      function loadHistory() {
+        const saved = localStorage.getItem("cledian_history_v2");
+        if (saved) {
+          try {
+            historyData = JSON.parse(saved);
+            renderHistory();
+          } catch (e) {
+            console.error("History parse error");
+          }
+        }
+      }
+
+      function clearHistory() {
+        historyData = [];
+        localStorage.removeItem("cledian_history_v2");
+        renderHistory();
+      }
+
+      function renderHistory() {
+        const list = document.getElementById("historyList");
+        if (historyData.length === 0) {
+          list.innerHTML = `<li class="p-8 text-center text-xs text-gray-400 italic">Chưa có dữ liệu</li>`;
+          return;
+        }
+
+        list.innerHTML = historyData
+          .map((item) => {
+            const borderColor = item.isSpam
+              ? "border-red-500"
+              : "border-emerald-500";
+            const textColor = item.isSpam
+              ? "text-red-600 dark:text-red-400"
+              : "text-emerald-600 dark:text-emerald-400";
+            const icon = item.isSpam ? "fa-exclamation" : "fa-check";
+            const preview =
+              item.text.length > 40
+                ? item.text.substring(0, 40) + "..."
+                : item.text;
+
+            return `
+                <li class="border-l-[3px] ${borderColor} bg-white dark:bg-slate-900 p-3 border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors cursor-default">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-[10px] font-bold ${textColor} uppercase">${
+              item.isSpam ? "SCAM" : "SAFE"
+            }</span>
+                        <span class="text-[10px] text-gray-400 font-mono">${
+                          item.time
+                        }</span>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 font-mono truncate" title="${
+                      item.text
+                    }">${preview}</p>
+                </li>
+                `;
+          })
+          .join("");
+      }
+    </script>
+  </body>
+</html>
