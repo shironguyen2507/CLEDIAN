@@ -1,4 +1,6 @@
 __pycache__/
 *.pyc
 .env
-models/*.pkl
+models/*
+!models/cledian_nb_model.pkl
+!models/vectorizer.pkl
